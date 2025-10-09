@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.ObjectId;
 
 const MediaSchema = new mongoose.Schema({
-    report : {
+    /* report : {
         type:ObjectId,
         ref: 'Report',
         required:true,
-    },
+    }, */
     media_type: {
         type: String, 
         enum: ['image', 'video'],
@@ -21,8 +21,8 @@ const MediaSchema = new mongoose.Schema({
     },
     uploadedAt:{
         type:Date,
-        default: Date.now()
+        default: Date.now
     }
 })
-const MediaModel = mongoose.model("admin", MediaSchema)
+const MediaModel = mongoose.model("Media", MediaSchema)
 module.exports = MediaModel

@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 const {ObjectId} = mongoose.Schema.Types;
 
 const ReportSchema = new mongoose.Schema({
-    reporter : {
+    reporterId : {
         type: ObjectId,
         ref: 'Reporter',
-        required: true
+        required: true,
+        default: null
     },
     trackingId:{
         type:String,
@@ -15,10 +16,11 @@ const ReportSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
-    media: {
+    media: [{
         type: ObjectId,
-        ref: 'Media'
-    },
+        ref: 'Media',
+        default: null
+    }],
     category: {
         type:String,
         enum: ['Domestic Violence', 'Cyber Harassment', 'Fraud/Scam', 'Sexual Harassment', 'Child Abuse', 'Missing Persons'],
@@ -26,7 +28,8 @@ const ReportSchema = new mongoose.Schema({
     },
     location:{
         type:ObjectId,
-        ref: 'Location'
+        ref: 'Location',
+        default: null
     },
     status:{
         type: String,
@@ -36,16 +39,17 @@ const ReportSchema = new mongoose.Schema({
     },
     credibilityScore:{
         type:  mongoose.Types.Decimal128,
-        required:true
+        required:true,
+        default: 0
     },
     forwardedTo: {
         type:ObjectId,
         ref: 'Organization',
-        //required: true
+        default: null
     },
     createdAt:{
         type:Date,
-        default: Date.now()
+        default: Date.now
     },
     tags: {
         type: [String],
@@ -54,5 +58,5 @@ const ReportSchema = new mongoose.Schema({
     }
 })
 
-const ReportModel = mongoose.model("admin", ReportSchema)
+const ReportModel = mongoose.model("Report", ReportSchema)
 module.exports = ReportModel
