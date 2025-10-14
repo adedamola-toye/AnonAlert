@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.ObjectId;
 
 const ReporterSchema = new mongoose.Schema({
-    anonymousID : {
+    reporterID : {
         type:UUID,
         required: true,
     },
@@ -16,5 +16,5 @@ const ReporterSchema = new mongoose.Schema({
         default: Date.now()
     }
 })
-const ReportModel = mongoose.model("admin", ReportSchema)
-module.exports = ReportModel
+const ReporterModel = mongoose.model("admin", ReportSchema)
+module.exports = ReporterModel

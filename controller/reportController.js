@@ -8,6 +8,7 @@ async function createReport(req, res) {
   try {
     //Retrieve from request body - look for way to retrieve reporterId, forwardedTo
     const { text, category, location } = req.body;
+    const reporterId = req.reporterId;
     const files = req.files || [];
     if (!text) {
       return res.status(400).json({ message: "Text is required" });
@@ -62,7 +63,7 @@ async function createReport(req, res) {
     //save the report
     try {
       const newReport = await Report.create({
-        //reporterId: ,
+        reporterId,
         text: text,
         category: category,
         location: locationId,
