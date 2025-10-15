@@ -3,12 +3,15 @@ const locationController = require("../controller/locationController");
 const Report = require("../model/Report");
 const Media = require("../model/Media");
 require("../config/cloudinary_settings");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const ReporterService = require("../services/reporterService");
 
 async function createReport(req, res) {
   try {
     //Retrieve from request body - look for way to retrieve reporterId, forwardedTo
     const { text, category, location } = req.body;
-    const reporterId = req.reporterId;
+    //const reporterId = req.reporterId;
     const files = req.files || [];
     if (!text) {
       return res.status(400).json({ message: "Text is required" });
@@ -25,12 +28,10 @@ async function createReport(req, res) {
       locationId = await locationController.createLocation(location);
     } catch (error) {
       console.error("Error creating location: ", location);
-      return res
-        .status(500)
-        .json({
-          message: "Could not process location data",
-          details: error.message,
-        });
+      return res.status(500).json({
+        message: "Could not process location data",
+        details: error.message,
+      });
     }
 
     const mediaIds = [];
@@ -60,10 +61,31 @@ async function createReport(req, res) {
         continue;
       }
     }
+    let reporterId;
+    const existingToken = req.cookies.AnonAlert_Reporter_Token;
+    if (existingToken) {
+      try {
+        const decoded = await ReporterService.verifyToken(existingToken);
+        reporterId = decoded.reporterId;
+      } catch (error) {
+        console.error("Token invalid or expired. Creating a new session");
+      }
+    }
+
+    if (!reporterId) {
+      const reporter = await ReporterService.createReporter();
+      reporterId = reporter._id;
+      res.cookie("AnonAlert_Reporter_Token", reporter.newToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 365 * 24 * 60 * 60 * 1000,
+      });
+    }
+
     //save the report
     try {
       const newReport = await Report.create({
-        reporterId,
+        reporterId: reporterId,
         text: text,
         category: category,
         location: locationId,
