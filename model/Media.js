@@ -25,4 +25,4 @@ const MediaSchema = new mongoose.Schema({
     }
 })
 const MediaModel = mongoose.model("Media", MediaSchema)
-module.exports = MediaModel
+export default MediaModel

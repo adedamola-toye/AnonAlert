@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const {ObjectId} = mongoose.Schema.Types;
 
 const ReportSchema = new mongoose.Schema({
-    reporterId : {
+    /* reporterId : {
         type: ObjectId,
         ref: 'Reporter',
         required: true,
         default: null
-    },
+    }, */
     trackingId:{
         type:String,
         unique: true,
@@ -59,4 +59,4 @@ const ReportSchema = new mongoose.Schema({
 })
 
 const ReportModel = mongoose.model("Report", ReportSchema)
-module.exports = ReportModel
+export default ReportModel

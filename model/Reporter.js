@@ -17,4 +17,4 @@ const ReporterSchema = new mongoose.Schema({
     }
 })
 const ReporterModel = mongoose.model("admin", ReportSchema)
-module.exports = ReporterModel
+export default ReporterModel

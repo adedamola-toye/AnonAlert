@@ -1,13 +1,13 @@
-const { cloudinary } = require("../config/cloudinary_settings");
-const locationController = require("../controller/locationController");
-const Report = require("../model/Report");
-const Media = require("../model/Media");
-require("../config/cloudinary_settings");
-const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
-const ReporterService = require("../services/reporterService");
 
-async function createReport(req, res) {
+import { cloudinary } from "../config/cloudinary_settings";
+import locationController from "../controller/locationController";
+import Report from "../model/Report"
+import Media from "../model/Media";
+import "../config/cloudinary_settings"
+import jwt from "jsonwebtoken";
+import generateTrackingId from "../utils/generateTrackingId";
+
+export async function createReport(req, res) {
   try {
     //Retrieve from request body - look for way to retrieve reporterId, forwardedTo
     const { text, category, location } = req.body;
@@ -61,7 +61,7 @@ async function createReport(req, res) {
         continue;
       }
     }
-    let reporterId;
+    /* let reporterId;
     const existingToken = req.cookies.AnonAlert_Reporter_Token;
     if (existingToken) {
       try {
@@ -71,8 +71,8 @@ async function createReport(req, res) {
         console.error("Token invalid or expired. Creating a new session");
       }
     }
-
-    if (!reporterId) {
+ */
+    /* if (!reporterId) {
       const reporter = await ReporterService.createReporter();
       reporterId = reporter._id;
       res.cookie("AnonAlert_Reporter_Token", reporter.newToken, {
@@ -80,12 +80,13 @@ async function createReport(req, res) {
         secure: process.env.NODE_ENV === "production",
         maxAge: 365 * 24 * 60 * 60 * 1000,
       });
-    }
+    } */
+
+    const trackingId = generateTrackingId();
 
     //save the report
     try {
       const newReport = await Report.create({
-        reporterId: reporterId,
         text: text,
         category: category,
         location: locationId,
@@ -93,10 +94,12 @@ async function createReport(req, res) {
         credibilityScore: 0,
         forwardedTo: null,
         media: mediaIds,
+        trackingId
       });
       return res.status(201).json({
         message: "Report successfully created and media uploaded",
         report: newReport,
+        trackingId: trackingId
       });
     } catch (error) {
       console.error("Error saving report: ", error);

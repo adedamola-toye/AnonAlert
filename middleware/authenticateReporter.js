@@ -1,4 +1,4 @@
-import reporterService from "../services/reporterService";
+/* import reporterService from "../services/reporterService";
 //const REPORTER_COOKIE_NAME = 'reporterToken';
 
 export async function authenticateReporter(req, res, next) {
@@ -11,9 +11,13 @@ export async function authenticateReporter(req, res, next) {
     const decoded = await reporterService.verifyToken(token);
     reporterId = decoded.reporterId;
     req.reporterId = reporterId;
-    res.clearCookie('AnonAlert_Reporter_Token')
     next();
   } catch (error) {
     console.error(error);
+    res.clearCookie('AnonAlert_Reporter_Token')
+    return res.status(403).json({ 
+            message: "Session expired or invalid. Please check your tracking ID manually." 
+        });
   }
 }
+ */

@@ -1,7 +1,7 @@
-const Admin = require("../model/Admin");
-const bcrypt = require("bcryptjs");
-const jwt = require('jsonwebtoken');
 
+import Admin from "../model/Admin";
+import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken'
 
 //REGISTER
 async function register(req, res){

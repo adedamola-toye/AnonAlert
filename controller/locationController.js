@@ -1,5 +1,5 @@
-const Location = require("../model/Location")
 
+import Location from "../model/Location"
 async function createLocation(locationInfo) {
     if(!locationInfo.city){
         return "Location has to have city"
