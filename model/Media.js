@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 const ObjectId = mongoose.Schema.ObjectId;
+
 
 const MediaSchema = new mongoose.Schema({
     /* report : {

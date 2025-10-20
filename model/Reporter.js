@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 const ObjectId = mongoose.Schema.ObjectId;
 
 const ReporterSchema = new mongoose.Schema({

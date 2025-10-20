@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+
+import mongoose from 'mongoose';
 const {ObjectId} = mongoose.Schema.Types;
 
 const AdminSchema = new mongoose.Schema({

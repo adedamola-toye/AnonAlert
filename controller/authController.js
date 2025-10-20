@@ -1,10 +1,10 @@
 
-import Admin from "../model/Admin";
+import Admin from "../model/Admin.js";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken'
 
 //REGISTER
-async function register(req, res){
+export async function register(req, res){
     try{
         const {username, email, phoneNo, password} = req.body
         if(!username || !email || !phoneNo ||!password){
@@ -45,7 +45,7 @@ async function register(req, res){
 }
 
 //LOGIN
-async function login(req, res){
+export async function login(req, res){
     try{
         const {username, email, password} = req.body
 
@@ -83,4 +83,3 @@ async function login(req, res){
         res.status(500).json({message: "Server error"})
     }
 }
-module.exports={register, login}
