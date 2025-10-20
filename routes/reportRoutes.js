@@ -1,10 +1,10 @@
 
 import express from 'express';
 const router =  express.Router()
-import {createReport} from "../controller/reportController.js"
+import {submitReport} from "../controller/reportController.js"
 import upload from '../middleware/multer.js'
 
-router.post("/submit", upload.any(), createReport)
+router.post("/submit", upload.any(), submitReport)
 
 
 export default router

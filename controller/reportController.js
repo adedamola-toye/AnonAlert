@@ -1,12 +1,12 @@
-import reportSubmissionService from "../services/reportSubmissionService.js";
+import {createReport} from "../services/reportSubmissionService.js";
 
-export async function createReport(req, res) {
+export async function submitReport(req, res) {
   try {
     //Retrieve from request body - look for way to retrieve reporterId, forwardedTo
     //const { text, category, location } = req.body;
     //const reporterId = req.reporterId;
     //const files = req.files || [];
-    const result = await reportSubmissionService.createReport(
+    const result = await createReport(
       req.body,
       req.files
     );

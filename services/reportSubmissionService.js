@@ -3,6 +3,7 @@ import Report from "../model/Report.js";
 import { createLocation } from "./locationService.js";
 import generateTrackingId from "../utils/generateTrackingId.js";
 import { uploadMedia } from "./mediaService.js";
+
 export async function createReport(info, files) {
   const { error, value } = createReportSchema.validate(info, {
     abortEarly: false,

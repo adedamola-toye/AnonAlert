@@ -1,11 +1,23 @@
 import multer from 'multer';
+// Add these imports to the top of your Multer file
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import fs from 'fs'
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const storage = multer.diskStorage({
     destination:function(req, file,cb){
-        cb(null, 'uploads/');
+        const uploadPath = join(__dirname, '..', 'uploads');
+         if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath);
+        }
+        cb(null, uploadPath);
     },
     filename: function(req, file, cb){
-        cb(null, new Date().toISOString() + '-' + file.originalname)
+        const timestamp = new Date().toISOString().replace(/:/g, '-');
+        cb(null, `${timestamp}-${file.originalname}`)
     }
 });
 
