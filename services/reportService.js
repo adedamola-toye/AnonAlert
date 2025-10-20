@@ -51,3 +51,28 @@ export async function createReport(info, files) {
     throw new Error("Error saving report:", error);
   }
 }
+
+export async function queryReport(id){
+
+  try{
+    const report = await Report.findOne({trackingId: id});
+    if (report){
+      return {
+        text: report.text,
+        media: report.media,
+        category: report.category,
+        location: report.location,
+        status: report.status,
+        forwardedTo: report.forwardedTo,
+        createdAt: report.createdAt,
+        tags: report.tags
+      }
+    }
+  else{
+    throw new Error("Report not found or invalid ID")
+  }
+  }catch(error){
+    throw error
+  }
+  
+}

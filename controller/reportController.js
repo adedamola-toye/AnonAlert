@@ -1,4 +1,4 @@
-import {createReport} from "../services/reportSubmissionService.js";
+import {createReport, queryReport} from "../services/reportService.js";
 
 export async function submitReport(req, res) {
   try {
@@ -35,4 +35,22 @@ export async function submitReport(req, res) {
         details: error.message,
       });
   }
+}
+
+export async function getReportStatus(req, res){
+  try{
+    const trackingId = req.params.trackingId;
+    const result = await queryReport(trackingId);
+    return res.status(200).json({
+      success: true,
+      report: result
+    })
+  }catch(error){
+    res.status(404).json({
+      success: false,
+      message: "Report not found",
+      error
+    })
+  }
+  
 }
