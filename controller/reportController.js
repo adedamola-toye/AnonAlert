@@ -2,10 +2,6 @@ import {createReport, queryReport} from "../services/reportService.js";
 
 export async function submitReport(req, res) {
   try {
-    //Retrieve from request body - look for way to retrieve reporterId, forwardedTo
-    //const { text, category, location } = req.body;
-    //const reporterId = req.reporterId;
-    //const files = req.files || [];
     const result = await createReport(
       req.body,
       req.files
@@ -26,7 +22,7 @@ export async function submitReport(req, res) {
         ? 400
         : 500;
 
-    console.error(`Request failed with status ${status}`, error);
+    console.error(`Request failed with status ${statusCode}`, error);
     return res
       .status(statusCode)
       .json({
@@ -54,3 +50,5 @@ export async function getReportStatus(req, res){
   }
   
 }
+
+

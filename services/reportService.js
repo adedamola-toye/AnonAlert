@@ -3,6 +3,7 @@ import Report from "../model/Report.js";
 import { createLocation } from "./locationService.js";
 import generateTrackingId from "../utils/generateTrackingId.js";
 import { uploadMedia } from "./mediaService.js";
+import { determineOrganization } from "./organizationService.js";
 
 export async function createReport(info, files) {
   const { error, value } = createReportSchema.validate(info, {
@@ -30,8 +31,10 @@ export async function createReport(info, files) {
 
     throw error;
   }
+
   const trackingId = generateTrackingId();
   const mediaIds = await uploadMedia(files);
+  const routedOrg = await determineOrganization(category, locationId)
 
   //save the report
   try {
@@ -41,7 +44,7 @@ export async function createReport(info, files) {
       location: locationId,
       status: "pending",
       credibilityScore: 0,
-      forwardedTo: null,
+      forwardedTo: routedOrg,
       media: mediaIds,
       trackingId,
     });

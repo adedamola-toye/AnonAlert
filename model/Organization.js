@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 
 
-const NGOSchema = new mongoose.Schema({
+const OrganizationSchema = new mongoose.Schema({
     name:{
         type:String,
         required: true,
@@ -36,5 +36,5 @@ const NGOSchema = new mongoose.Schema({
     }]
 })
 
-const NGOModel = mongoose.model("ngo", NGOSchema)
-export default NGOModel;
+const OrganizationModel = mongoose.model("ngo", OrganizationSchema)
+export default OrganizationModel;
