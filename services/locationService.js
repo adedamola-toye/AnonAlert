@@ -13,12 +13,13 @@ export async function createLocation(locationInfo) {
         throw new Error(errorMessages);
       }
 
-      const {city, street} = value;
+      const {city, street, state} = value;
     
     
     const reportLoc = await Location.create({
         city,
-        street
+        street,
+        state
     })
 
     return reportLoc._id;

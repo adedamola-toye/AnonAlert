@@ -11,4 +11,9 @@ export const createLocationSchema = Joi.object({
     'any.required': 'Street is required',
   }),
 
+  state: Joi.string().required().messages({
+    'string.empty': 'State cannot be empty',
+    'any.required': 'State is required',
+  }),
+
 })

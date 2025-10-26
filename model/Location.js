@@ -10,6 +10,10 @@ const LocationSchema = new mongoose.Schema({
     street:{
         type:String,
         required: true,
+    },
+    state:{
+        type:String,
+        required: true
     }
 })
 const LocationModel = mongoose.model("Location", LocationSchema)
