@@ -2,6 +2,7 @@ import Report from "../model/Report.js"
 import Organization from "../model/Organization.js";
 import Location from "../model/Location.js";
 import {reportStatusSchema} from "../validation/schemas/reportStatusSchema.js"
+import { validateOrThrow } from "../validation/validationHelper.js";
 
 export async function determineOrganization(reportCategory, reportLocationID) {
   try {
@@ -27,28 +28,40 @@ export async function determineOrganization(reportCategory, reportLocationID) {
   }
 }
 
-export async function updateStatus(newStatus, reportId){
-  const { error, value } = reportStatusSchema.validate({status: newStatus}, {
-    abortEarly: false,
-    allowUnknown: false,
-  });
+export async function updateStatus(newStatus, reportId, orgId){
+  
+ const value = validateOrThrow(reportStatusSchema, {status:newStatus});
 
-  if (error) {
-    const errorMessages = error.details.map((detail) =>
-      detail.message.replace(/['"]+/g, "")
-    );
-    throw new Error(errorMessages);
-  }
   try{
     const reportToUpdate = await Report.findById(reportId)
+   
     if(!reportToUpdate){
       const error = new Error("Invalid Report ID")
       error.statusCode = 404;
       throw error
     }
+
+     if (reportToUpdate.forwardedTo.toString() !== orgId){
+      throw new Error("Unauthorized: Not the assigned organization.");
+    }
     reportToUpdate.status = value.status;
-    await reportToUpdate.save();
-    return reportToUpdate;
+    const updatedReport = await reportToUpdate.save();
+    return updatedReport;
+  }
+  catch(error){
+    throw error
+  }
+}
+
+export async function getReports(orgId){
+  try{
+    const reports = await Report.find({forwardedTo : orgId})
+    if(reports.length === 0){
+      const error = new Error("No reports found assigned to this NGO")
+      error.statusCode = 404;
+      throw error
+    }
+    return reports
   }
   catch(error){
     throw error
