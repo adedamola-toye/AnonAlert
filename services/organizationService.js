@@ -42,7 +42,9 @@ export async function updateStatus(newStatus, reportId, orgId){
     }
 
      if (reportToUpdate.forwardedTo.toString() !== orgId){
-      throw new Error("Unauthorized: Not the assigned organization.");
+      const error = new Error("Unauthorized: Not the assigned organization.");
+      error.statusCode = 403;
+      throw error;
     }
     reportToUpdate.status = value.status;
     const updatedReport = await reportToUpdate.save();
@@ -53,7 +55,7 @@ export async function updateStatus(newStatus, reportId, orgId){
   }
 }
 
-export async function getReports(orgId){
+export async function getForwardedReportsService(orgId){
   try{
     const reports = await Report.find({forwardedTo : orgId})
     if(reports.length === 0){

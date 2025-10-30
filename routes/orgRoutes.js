@@ -1,11 +1,12 @@
 
 import express from 'express';
 const router =  express.Router()
-import {register, login} from "../controller/authController.js"
+import { updateStatusController, getForwardedReports } from '../controller/organizationController.js';
+import { authMiddleware } from '../middleware/authOrgMiddleware.js';
 
 
-router.post("/register", register)
-router.post("/login", login)
+router.put("/reports/:reportId", authMiddleware, updateStatusController)
+router.get("/reports",authMiddleware, getForwardedReports)
 
 //get all reports for tnat particular org
 //update status

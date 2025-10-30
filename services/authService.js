@@ -68,13 +68,11 @@ export async function loginService(info) {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
+
+    
     return { token, payload };
   } catch (error) {
     throw error;
   }
 }
 
-
-export async function logoutService(){
-  
-}
