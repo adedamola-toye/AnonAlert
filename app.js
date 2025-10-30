@@ -8,6 +8,7 @@ import './config/mongoose_settings.js';
 import  indexRouter from './routes/index.js'
 import reportRoutes from "./routes/reportRoutes.js"
 import authRoutes from './routes/authRoutes.js'
+import orgRoutes from './routes/orgRoutes.js'
 
 const  app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -26,7 +27,8 @@ app.use(express.static(join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api/reports', reportRoutes)
-app.use('/api/admin', authRoutes)
+app.use('/api/org/auth', authRoutes)
+app.use('/api/org', authRoutes)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

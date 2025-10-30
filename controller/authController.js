@@ -23,6 +23,12 @@ export async function register(req, res){
 export async function login(req, res){
     try{
         const result = await loginService(req.body);
+        res.cookie('jwt', result.token, {
+        httpOnly: true,
+        maxAge: 3600000, 
+        // secure: process.env.NODE_ENV === 'production', // Use in production
+        // sameSite: 'strict' // Recommended for CSRF protection
+    });
         return res.status(200).json({
             success: true,
             message: "Organization logged in successfully",
@@ -39,5 +45,17 @@ export async function login(req, res){
             details: errorMessage
         })
     }
+}
+
+export async function logout(req, res){
+    res.cookie('jwt', '', { 
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', 
+        maxAge: 1
+    });
+    return res.status(200).json({
+        success: true,
+        message: "Logout successful"
+    })
 }
 
