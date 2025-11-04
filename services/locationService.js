@@ -2,6 +2,7 @@
 import Location from "../model/Location.js"
 import { createLocationSchema } from "../validation/schemas/locationSchema.js";
 export async function createLocation(locationInfo) {
+
     const { error, value } = createLocationSchema.validate(locationInfo, {
         abortEarly: false,
         allowUnknown: false,
@@ -14,8 +15,7 @@ export async function createLocation(locationInfo) {
       }
 
       const {city, street, state} = value;
-    
-    
+
     const reportLoc = await Location.create({
         city,
         street,

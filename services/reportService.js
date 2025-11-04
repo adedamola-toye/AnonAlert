@@ -4,6 +4,7 @@ import { createLocation } from "./locationService.js";
 import generateTrackingId from "../utils/generateTrackingId.js";
 import { uploadMedia } from "./mediaService.js";
 import { determineOrganization } from "./organizationService.js";
+import { calculateCredibilityScore } from "./credibilityScoringService.js";
 
 export async function createReport(info, files) {
   const { error, value } = createReportSchema.validate(info, {
@@ -18,6 +19,8 @@ export async function createReport(info, files) {
   }
 
   const { text, category, location } = value;
+  const normalizedReportCategory = category.toLowerCase();
+
 
   let locationId;
   try {
@@ -33,18 +36,23 @@ export async function createReport(info, files) {
   }
 
   const trackingId = generateTrackingId();
-  const mediaIds = await uploadMedia(files);
+  const mediaResult = await uploadMedia(files);
+  const mediaIds = mediaResult.map(mediaItem => mediaItem.id);
+
+  const credibilityScore = await calculateCredibilityScore(value, mediaResult)
   const routedOrg = await determineOrganization(category, locationId)
 
+  const status = routedOrg ? "assigned/pending":"unassigned";
+  const forwardedTo = routedOrg || null;
   //save the report
   try {
     const newReport = await Report.create({
       text: text,
-      category: category,
+      category: normalizedReportCategory,
       location: locationId,
-      status: "pending",
-      credibilityScore: 0,
-      forwardedTo: routedOrg,
+      status,
+      credibilityScore,
+      forwardedTo,
       media: mediaIds,
       trackingId,
     });

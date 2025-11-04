@@ -1,8 +1,8 @@
-import { registerSchema, loginSchema } from "../validation/schemas/authSchema";
-import Organization from "../model/Organization";
+import { registerSchema, loginSchema } from "../validation/schemas/authSchema.js";
+import Organization from "../model/Organization.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { validateOrThrow } from "../validation/validationHelper";
+import { validateOrThrow } from "../validation/validationHelper.js";
 
 export async function registerService(info) {
   const value = validateOrThrow(registerSchema, info);
@@ -31,8 +31,8 @@ export async function registerService(info) {
       email,
       phoneNo,
       passwordHash: hashedPassword,
-      categoriesHandled: categoriesHandled,
-      statesCovered: statesCovered,
+      categoriesHandled: categoriesHandled.map(c => c.toLowerCase()),
+      statesCovered: statesCovered.map(s => s.toLowerCase()),
     });
     return org;
   } catch (error) {

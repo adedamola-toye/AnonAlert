@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 export async function authMiddleware(req,res,next){
     const token = req.cookies.jwt
     if(!token){
@@ -20,7 +22,5 @@ export async function authMiddleware(req,res,next){
         next();
     }
     )
-
-
 
 }

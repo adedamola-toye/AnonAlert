@@ -11,7 +11,7 @@ export function validateOrThrow(schema, input){
         ).join('; ');
         const validationError = new Error(errorMessages);
         validationError.statusCode = 400;
-        throw new Error(errorMessages.join(", "));
+        throw validationError;
       }
       return value;
 }

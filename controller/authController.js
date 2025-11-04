@@ -1,5 +1,4 @@
-import { registerService, loginService } from "../services/authService";
-
+import { registerService, loginService } from "../services/orgAuthService.js"
 export async function register(req, res){
     try{
         const result = await registerService(req.body);

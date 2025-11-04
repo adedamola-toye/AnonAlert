@@ -3,7 +3,8 @@ import Media from "../model/Media.js"
 
 export async function uploadMedia(files){
   const filesToUpload = Array.isArray(files)?files: [];
-    const mediaIds = [];
+    //const mediaIds = [];
+    const mediaResults = [];
      for (const file of filesToUpload) {
           let mediaType = "";
           if (file.mimetype.startsWith("image/")) {
@@ -23,11 +24,17 @@ export async function uploadMedia(files){
               media_type: mediaType,
               url: result.secure_url,
             });
-            mediaIds.push(newMedia._id);
+            //mediaIds.push(newMedia._id);
+           
+            mediaResults.push({
+              id:newMedia._id,
+              type: newMedia.media_type
+            })
           } catch (error) {
             console.error("Media upload failed:", error);
             continue;
           }
         } 
-        return mediaIds;
+        //return mediaIds;
+        return mediaResults;
 }

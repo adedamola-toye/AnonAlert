@@ -9,10 +9,23 @@ import  indexRouter from './routes/index.js'
 import reportRoutes from "./routes/reportRoutes.js"
 import authRoutes from './routes/authRoutes.js'
 import orgRoutes from './routes/orgRoutes.js'
+import cron from "node-cron";
+import { autoAssignReports } from "./jobs/autoAssignReports.js";
+
+
 
 const  app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+//Run auto assign job everytime server starts
+autoAssignReports();
+
+// Run once every 1 hour
+cron.schedule("0 * * * *", () => {
+  console.log("🔄 Running auto-assignment job...");
+  autoAssignReports();
+});
 
 // view engine setup
 app.set('views', join(__dirname, 'views'));
@@ -28,7 +41,7 @@ app.use(express.static(join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/reports', reportRoutes)
 app.use('/api/org/auth', authRoutes)
-app.use('/api/org', authRoutes)
+app.use('/api/org', orgRoutes)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

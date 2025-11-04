@@ -1,4 +1,4 @@
-import { updateStatus, getForwardedReportsService } from "../services/organizationService";
+import { updateStatus, getAllForwardedReportsService, getSingleForwardedReportService } from "../services/organizationService.js";
 
 export async function updateStatusController(req, res) {
   try {
@@ -23,13 +23,36 @@ export async function updateStatusController(req, res) {
   }
 }
 
-export async function getForwardedReports(req, res){
+export async function getAllForwardedReports(req, res){
   try{
-    const reports = await getForwardedReportsService(req.orgId)
+    const reports = await getAllForwardedReportsService(req.orgId)
     return res.status(200).json({
       success: true,
-      message: "Forwarded reports retrived succcessfully",
+      message: "All forwarded reports retrieved successfully",
       result: reports,
+    });
+  }
+  catch (error) {
+    const errorMessage = error.message;
+    const statusCode = error.statusCode || 500
+    console.error(`Request failed with status ${statusCode}`, error);
+    return res.status(statusCode).json({
+      success: false,
+      message: statusCode === 500 ? "Internal Server Error" : errorMessage,
+      details: error.message,
+    });
+  }
+
+}
+
+export async function getSingleForwardedReport(req, res){
+  try{
+    const reportId = req.params.reportId
+    const report= await getSingleForwardedReportService(req.orgId, reportId)
+    return res.status(200).json({
+      success: true,
+      message: "Report retrieved successfully",
+      result: report,
     });
   }
   catch (error) {

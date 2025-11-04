@@ -1,14 +1,13 @@
 import Joi from 'joi';
-const ACCEPTABLE_CATEGORIES = [
-  'Domestic Violence', 'Cyber Harassment', 'Fraud/Scam', 'Sexual Harassment', 'Child Abuse', 'Missing Persons'
-]
+import {ACCEPTABLE_CATEGORIES} from "../../utils/enums.js"
+
 export const createReportSchema = Joi.object({
   text: Joi.string().required().messages({
     'string.empty': 'Report text cannot be empty',
     'any.required': 'Report text is required',
   }),
 
-  category: Joi.string().required().valid(...ACCEPTABLE_CATEGORIES)
+  category: Joi.string().required().valid(...ACCEPTABLE_CATEGORIES).insensitive()
   .messages({
     'string.empty': 'Report category cannot be empty',
     'any.required': 'Report category is required',
