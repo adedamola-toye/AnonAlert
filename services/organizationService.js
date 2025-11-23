@@ -1,6 +1,7 @@
 import Report from "../model/Report.js";
 import Organization from "../model/Organization.js";
 import Location from "../model/Location.js";
+import Chat from "../model/Chat.js"
 import { updateReportStatusSchema } from "../validation/schemas/reportStatusSchema.js";
 import { validateOrThrow } from "../validation/validationHelper.js";
 
@@ -31,7 +32,7 @@ export async function determineOrganization(reportCategory, reportLocationID) {
       error.statusCode = 404;
       throw error; */
       console.warn(
-        `⚠️ No suitable organization found for category "${reportCategory}" in "${reportLocationObj.state}". Report will be stored without routing.`
+        `No suitable organization found for category "${reportCategory}" in "${reportLocationObj.state}". Report will be stored without routing.`
       );
       return null;
     }
@@ -100,3 +101,46 @@ export async function getSingleForwardedReportService(orgId, reportId){
     throw error
   }
 }
+
+export async function getAllReportsByReducingCredibilityScoreService(orgId){
+  try{
+    const reportsRanking  = await Report.find({forwardedTo: orgId}).sort({credibilityScore: -1})
+    if (reportsRanking.length === 0) {
+      const error = new Error("No reports found assigned to this NGO, so no ranking available");
+      error.statusCode = 404;
+      throw error;
+    }
+    return reportsRanking;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+export async function sendMessageService({orgId, reportId, messageText}){
+  try{
+    const report = await Report.findById(reportId);
+    if(!report){
+      const error = new Error(`Report with id: ${reportId} not found`);
+      error.statusCode = 404;
+      throw error;
+    }
+    if(report.forwardedTo.toString() !== orgId){
+      const error = new Error("Unauthorized: Not the assigned organization.");
+      error.statusCode = 403;
+      throw error;
+    }
+    const newChat = await Chat.create({
+      reportId,
+      senderType: "org",
+      senderId: orgId,
+      messageText
+    });
+    return newChat
+  }catch (error) {
+    console.error("Error saving chat: ", error);
+    throw new Error("Error saving chat:" +  error.message);
+  }
+}
+
+
