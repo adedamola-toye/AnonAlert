@@ -38,7 +38,7 @@ export async function getChatHistory(req, res) {
       tokenIsValid=false;
     }
     if (!tokenIsValid) {
-      const newToken = generateAnonChatToken(reportId);
+      const newToken = await generateAnonChatToken(reportId);
       res.cookie("anon_chat_jwt", newToken, {
         httpOnly: true,
         maxAge: 1800000,
