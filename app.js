@@ -11,7 +11,7 @@ import authRoutes from './routes/authRoutes.js'
 import orgRoutes from './routes/orgRoutes.js'
 import cron from "node-cron";
 import { autoAssignReports } from "./jobs/autoAssignReports.js";
-
+import "./config/modelLoader.js"
 
 
 const  app = express();
@@ -19,7 +19,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 //Run auto assign job everytime server starts
-autoAssignReports();
+//autoAssignReports();
 
 // Run once every 1 hour
 cron.schedule("0 * * * *", () => {

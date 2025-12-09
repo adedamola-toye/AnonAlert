@@ -70,7 +70,7 @@ export async function updateStatus(newStatus, reportId, orgId) {
   }
 }
 
-export async function getAllForwardedReportsService(orgId) {
+/* export async function getAllForwardedReportsService(orgId) {
   try {
     const reports = await Report.find({ forwardedTo: orgId });
     if (reports.length === 0) {
@@ -82,9 +82,31 @@ export async function getAllForwardedReportsService(orgId) {
   } catch (error) {
     throw error;
   }
+} */
+// In organizationService.js
+
+export async function getAllForwardedReportsService(orgId) {
+  try {
+    const reports = await Report.find({ forwardedTo: orgId })
+        .populate([ // ✅ ADD POPULATION
+            { path: 'location' },
+            { path: 'media', select: 'url' },
+        ])
+        .lean() // ✅ Use lean for performance
+        .exec();
+
+    if (reports.length === 0) {
+      const error = new Error("No reports found assigned to this NGO");
+      error.statusCode = 404;
+      throw error;
+    }
+    return reports;
+  } catch (error) {
+    throw error;
+  }
 }
 
-export async function getSingleForwardedReportService(orgId, reportId){
+/* export async function getSingleForwardedReportService(orgId, reportId){
   try{
     const report = await Report.findOne({
       forwardedTo: orgId,
@@ -100,9 +122,32 @@ export async function getSingleForwardedReportService(orgId, reportId){
   }catch(error){
     throw error
   }
+} */
+export async function getSingleForwardedReportService(orgId, reportId){
+    try{
+        const report = await Report.findOne({
+            forwardedTo: orgId,
+            _id: reportId
+        })
+        .populate([ // ✅ ADD POPULATION
+            { path: 'location' },
+            { path: 'media', select: 'url publicId' },
+        ])
+        .lean() // ✅ For better performance
+        .exec();
+
+        if(!report){
+            const error = new Error(`No report found with id: ${reportId} that was assigned to this organization`);
+            error.statusCode = 404;
+            throw error;
+        }
+        return report;
+    }catch(error){
+        throw error
+    }
 }
 
-export async function getAllReportsByReducingCredibilityScoreService(orgId){
+/* export async function getAllReportsByReducingCredibilityScoreService(orgId){
   try{
     const reportsRanking  = await Report.find({forwardedTo: orgId}).sort({credibilityScore: -1})
     if (reportsRanking.length === 0) {
@@ -114,8 +159,27 @@ export async function getAllReportsByReducingCredibilityScoreService(orgId){
   } catch (error) {
     throw error;
   }
-}
+} */
+export async function getAllReportsByReducingCredibilityScoreService(orgId){
+    try{
+        const reportsRanking = await Report.find({forwardedTo: orgId})
+            .sort({credibilityScore: -1})
+            .populate([ // ✅ ADD POPULATION
+                { path: 'location' },
+            ])
+            .lean() // ✅ For better performance
+            .exec();
 
+        if (reportsRanking.length === 0) {
+            const error = new Error("No reports found assigned to this NGO, so no ranking available");
+            error.statusCode = 404;
+            throw error;
+        }
+        return reportsRanking;
+    } catch (error) {
+        throw error;
+    }
+}
 
 export async function sendMessageService({orgId, reportId, messageText}){
   try{

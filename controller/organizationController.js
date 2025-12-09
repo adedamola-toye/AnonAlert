@@ -1,5 +1,5 @@
 import { updateStatus, getAllForwardedReportsService, getSingleForwardedReportService, getAllReportsByReducingCredibilityScoreService, sendMessageService } from "../services/organizationService.js";
-import { getChatHistoryService } from "./chatService.js";
+import { getChatHistoryService } from "../services/chatService.js";
 
 export async function updateStatusController(req, res) {
   try {

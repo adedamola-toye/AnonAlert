@@ -20,7 +20,7 @@ export async function autoAssignReports() {
 
       if (newOrg) {
         report.forwardedTo = newOrg;
-        report.status = "pending";
+        report.status = "assigned/pending";
         await report.save();
         console.log(`Report ${report._id} assigned to organization ${newOrg}`);
       } else {

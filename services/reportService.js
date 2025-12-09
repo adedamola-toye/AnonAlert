@@ -5,6 +5,7 @@ import generateTrackingId from "../utils/generateTrackingId.js";
 import { uploadMedia } from "./mediaService.js";
 import { determineOrganization } from "./organizationService.js";
 import { calculateCredibilityScore } from "./credibilityScoringService.js";
+import Organization from "../model/Organization.js";
 
 export async function createReport(info, files) {
   const { error, value } = createReportSchema.validate(info, {
@@ -21,7 +22,6 @@ export async function createReport(info, files) {
   const { text, category, location } = value;
   const normalizedReportCategory = category.toLowerCase();
 
-
   let locationId;
   try {
     const locationObj = JSON.parse(location);
@@ -37,12 +37,12 @@ export async function createReport(info, files) {
 
   const trackingId = generateTrackingId();
   const mediaResult = await uploadMedia(files);
-  const mediaIds = mediaResult.map(mediaItem => mediaItem.id);
+  const mediaIds = mediaResult.map((mediaItem) => mediaItem.id);
 
-  const credibilityScore = await calculateCredibilityScore(value, mediaResult)
-  const routedOrg = await determineOrganization(category, locationId)
+  const credibilityScore = await calculateCredibilityScore(value, mediaResult);
+  const routedOrg = await determineOrganization(category, locationId);
 
-  const status = routedOrg ? "assigned/pending":"unassigned";
+  const status = routedOrg ? "assigned/pending" : "unassigned";
   const forwardedTo = routedOrg || null;
   //save the report
   try {
@@ -63,10 +63,14 @@ export async function createReport(info, files) {
   }
 }
 
+/* 
 export async function queryReport(id){
 
   try{
     const report = await Report.findOne({trackingId: id});
+    if (!report) {
+             throw new Error("Report not found or invalid ID");
+      }
     if (report){
       return {
         text: report.text,
@@ -86,4 +90,44 @@ export async function queryReport(id){
     throw error
   }
   
+}
+ */
+
+
+
+// In reportService.js: queryReport(id)
+
+export async function queryReport(id) {
+    try {
+        const report = await Report.findOne({ trackingId: id })
+            .populate([
+                {
+                    path: 'forwardedTo',
+                    select: 'name email phoneNo'
+                },
+                {
+                    path: 'location'
+                },
+                {
+                    path: 'media',
+                    select: 'url publicId'
+                },
+            ])
+            .lean() // ⬅️ CRITICAL: Return plain JS object for performance and stability
+            .exec();
+
+        // 🚨 CRITICAL CHECK: If report is null, throw the 404 error
+        if (!report) {
+            throw new Error("Report not found or invalid ID");
+        }
+
+        // Return the full, populated, clean object
+        // The controller can now access report.forwardedTo.name, etc.
+        return report;
+    } catch (error) {
+        // Log the actual error to see why population might be failing
+        console.error("Error during report query/population:", error); 
+        // Rethrow the error to be caught by the controller
+        throw error;
+    }
 }

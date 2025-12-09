@@ -1,8 +1,8 @@
-import { getChatHistoryService } from "../services/chatService";
-import Report from "../model/Report";
-import { generateAnonChatToken } from "../utils/generateAnonChatToken";
-import { verifyAnonChatToken } from "../utils/verifyAnonChatToken";
-import { sendMessageByReporterService } from "../services/chatService";
+import { getChatHistoryService } from "../services/chatService.js";
+import Report from "../model/Report.js";
+import { generateAnonChatToken } from "../utils/generateAnonChatToken.js";
+import { verifyAnonChatToken } from "../utils/verifyAnonChatToken.js";
+import { sendMessageByReporterService } from "../services/chatService.js";
 
 export async function getChatHistory(req, res) {
   try {
@@ -20,7 +20,7 @@ export async function getChatHistory(req, res) {
     //check if token exists
     let tokenIsValid = false;
     const existingToken = req.cookies.anon_chat_jwt;
-    if (existingToken) {
+    if (existingToken && existingToken.length > 0) {
       try {
         const decodedPayload = await verifyAnonChatToken(existingToken);
         if (decodedPayload.reportId === reportId.toString()) {
@@ -33,6 +33,9 @@ export async function getChatHistory(req, res) {
           secure: process.env.NODE_ENV === "production",
         });
       }
+    }
+    else{
+      tokenIsValid=false;
     }
     if (!tokenIsValid) {
       const newToken = generateAnonChatToken(reportId);

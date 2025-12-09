@@ -9,7 +9,7 @@ const ChatSchema = new mongoose.Schema({
 
   senderType: {
     type: String,
-    enum: "org" | "reporter",
+    enum: ["org", "reporter"],
     required: true,
   },
 

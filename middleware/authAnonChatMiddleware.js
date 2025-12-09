@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { verifyAnonChatToken } from "../utils/verifyAnonChatToken";
+import { verifyAnonChatToken } from "../utils/verifyAnonChatToken.js";
 export async function authAnonChatMiddleware(req, res, next) {
   try {
     const token = req.cookies.anon_chat_jwt;
