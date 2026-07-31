@@ -118,7 +118,7 @@ AnonAlert follows a **3-Tier Architecture** emphasizing separation of concerns:
 
 ```bash
 # Clone repository
-git clone https://github.com/YOUR_USERNAME/anonalert.git
+git clone https://github.com/adedamola-toye/anonalert.git
 
 # Navigate into project
 cd anonalert
